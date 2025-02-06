@@ -71,5 +71,5 @@ jobs:
       - name: Docker image push
         id: dockerImagePush
         run: |
-          docker login -u naresh240 --password-stdin ${{ secrets.DOCKER_PASSWORD }}
+          docker login -u naresh240 -p ${{ secrets.DOCKER_PASSWORD }}
           docker push naresh240/springboothello:v1
