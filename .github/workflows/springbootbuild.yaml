@@ -60,21 +60,50 @@ jobs:
 
       - name: Build Docker Image
         id: buildDockerImage
-        run: docker build -t springboothello:v1 .
-      
-      - name: List Docker Images
-        id: listDockerImages
-        run: docker images
+        run: |
+          docker build -t springboothello:v1 .
+
+      - name: Save Docker Image as Artifact
+        id: saveDockerImage
+        run: |
+          docker save springboothello:v1 -o springboothello.tar
+          mkdir -p image
+          mv springboothello.tar image/
+
+      - name: Upload Docker Image Artifact
+        id: uploadDockerImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: image/
+
   docker_push:
     runs-on: ubuntu-latest
     needs: docker_build
     steps:
-    - name: Docker image tagging
-      id: dockerImageTag
-      run: docker tag springboothello:v1 naresh240/springboothello:v1
+      - name: Checkout Repository
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Download Docker Image Artifact
+        id: downloadDockerImage
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: image/
+
+      - name: Load Docker Image
+        id: loadDockerImage
+        run: |
+          docker load -i image/springboothello.tar
+
+      - name: Docker image tagging
+        id: dockerImageTag
+        run: |
+          docker tag springboothello:v1 naresh240/springboothello:v1
     
-    - name: Docker image push
-      id: dockerImagePush
-      run: |
-        docker login -u naresh240 -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push naresh240/springboothello:v1
+      - name: Docker image push
+        id: dockerImagePush
+        run: |
+          docker login -u naresh240 -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push naresh240/springboothello:v1
