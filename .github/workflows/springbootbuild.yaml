@@ -54,7 +54,7 @@ jobs:
         id: downloadArtifact
         uses: actions/download-artifact@v4
         with:
-          name: maven-package
+          name: package
           path: artifact/
 
       - name: Build Docker Image
