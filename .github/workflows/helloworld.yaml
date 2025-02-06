@@ -1,5 +1,7 @@
 name: Its my first pipeline
 
+on: 
+  push
 jobs:
   print:
     name: Print Hello world using github actions
