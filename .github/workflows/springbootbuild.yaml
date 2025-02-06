@@ -41,6 +41,7 @@ jobs:
         with:
           name: Package
           path: artifact/
+          retention-days: 30
 
   docker:
     runs-on: ubuntu-latest
