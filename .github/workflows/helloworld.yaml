@@ -1,7 +1,9 @@
 name: Its my first pipeline
 
 on: 
-  push
+  push:
+    branches:
+    - feature/helloworld
 
 jobs:
   print:
