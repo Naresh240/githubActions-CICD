@@ -1,4 +1,4 @@
-name: Build and upload artifact Pipeline
+name: Build Pipeline
 
 on: 
   push:
@@ -19,6 +19,15 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Cache Maven Dependencies
+        id: cache-maven
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-${{ runner.os }}-
 
       - name: Build Artifact
         id: build
