@@ -43,7 +43,7 @@ jobs:
           path: artifact/
           retention-days: 30
 
-  docker:
+  docker_build:
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -60,9 +60,21 @@ jobs:
 
       - name: Build Docker Image
         id: buildDockerImage
-        run: |
-          docker build -t springboothello:v1 .
+        run: docker build -t springboothello:v1 .
       
       - name: List Docker Images
         id: listDockerImages
         run: docker images
+  docker_push:
+    runs-on: ubuntu-latest
+    needs: docker_build
+    steps:
+    - name: Docker image tagging
+      id: dockerImageTag
+      run: docker tag springboothello:v1 naresh240/springboothello:v1
+    
+    - name: Docker image push
+      id: dockerImagePush
+      run: |
+        docker login -u naresh240 -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push naresh240/springboothello:v1
