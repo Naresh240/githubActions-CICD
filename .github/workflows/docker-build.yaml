@@ -1,6 +1,9 @@
 name: Build Docker Image
 
 on:
+  push:
+    branches:
+    - feature/docker
   workflow_run:
     workflows: ["Build Pipeline"]
     types:
