@@ -1,0 +1,31 @@
+name: Build Docker Image
+
+on:
+  workflow_run:
+    workflows: ["Build Maven Artifact"]
+    types:
+      - completed
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Download Maven Artifact
+        id: downloadArtifact
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-package
+          path: artifact/
+
+      - name: Build Docker Image
+        id: buildDockerImage
+        run: |
+          docker build -t springboothello:v1 .
+      
+      - name: List Docker Images
+        id: listDockerImages
+        run: docker images
