@@ -3,7 +3,7 @@ name: Build Pipeline
 on: 
   push:
     branches:
-      - feature/docker
+      - feature/kubernetes
 
 jobs:
   build:
@@ -73,3 +73,29 @@ jobs:
         run: |
           docker login -u naresh240 -p ${{ secrets.DOCKER_PASSWORD }}
           docker push naresh240/springboothello:v1
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+      - name: Checkout Repository
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@master
+
+      - name: Try the cluster !
+        run: kubectl get pods -A
+
+      - name: Deploy to minikube
+        run: |
+          kubectl apply -f deploy/deployment.yaml
+          kubectl wait --for=condition=ready pod -l app=local-devex
+          kubectl apply -f deploy/service.yaml
+
+      - name: Test service URLs
+        run: |
+          minikube service list
+          minikube service local-devex-svc --url
+          echo "------------------opening the service------------------"
+          curl $(minikube service local-devex-svc --url)
