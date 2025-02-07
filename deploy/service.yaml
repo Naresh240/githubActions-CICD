@@ -4,11 +4,10 @@ kind: Service
 metadata:
   name: springboot-hello
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: springboot-hello
   ports:
   - name: http
     port: 8080
     targetPort: 8080
-    nodePort: 30001
