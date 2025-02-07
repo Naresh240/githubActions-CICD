@@ -96,6 +96,6 @@ jobs:
       - name: Test service URLs
         run: |
           minikube service list
-          minikube service springboot-hello-svc --url
+          minikube service springboot-hello --url
           echo "------------------opening the service------------------"
-          curl $(minikube service springboot-hello-svc --url)
+          curl $(minikube service springboot-hello --url)
