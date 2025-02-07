@@ -66,15 +66,15 @@ jobs:
       - name: Build Docker Image
         id: buildDockerImage
         run: |
-          docker build -t springboothello:$${{ env.IMAGE_TAG }} .
+          docker build -t springboothello:${{ env.IMAGE_TAG }} .
 
       - name: Docker image tagging
         id: dockerImageTag
         run: |
-          docker tag springboothello:$${{ env.IMAGE_TAG }} naresh240/springboothello:$${{ env.IMAGE_TAG }}
+          docker tag springboothello:${{ env.IMAGE_TAG }} naresh240/springboothello:${{ env.IMAGE_TAG }}
     
       - name: Docker image push
         id: dockerImagePush
         run: |
           docker login -u naresh240 -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push naresh240/springboothello:$${{ env.IMAGE_TAG }}
+          docker push naresh240/springboothello:${{ env.IMAGE_TAG }}
