@@ -64,18 +64,25 @@ jobs:
           name: package
           path: artifact/
 
+      - name: Set Image Tag
+        run: |
+          if [ -z "${{ github.event.inputs.image_tag }}" ]; then
+            echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+          else
+            echo "IMAGE_TAG=${{ github.event.inputs.image_tag }}" >> $GITHUB_ENV
+          fi
       - name: Build Docker Image
         id: buildDockerImage
         run: |
-          docker build -t springboothello:${{ inputs.image_tag }} .
+          docker build -t springboothello:$${{ env.IMAGE_TAG }} .
 
       - name: Docker image tagging
         id: dockerImageTag
         run: |
-          docker tag springboothello:${{ inputs.image_tag }} naresh240/springboothello:${{ inputs.image_tag }}
+          docker tag springboothello:$${{ env.IMAGE_TAG }} naresh240/springboothello:$${{ env.IMAGE_TAG }}
     
       - name: Docker image push
         id: dockerImagePush
         run: |
           docker login -u naresh240 -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push naresh240/springboothello:${{ inputs.image_tag }}
+          docker push naresh240/springboothello:$${{ env.IMAGE_TAG }}
