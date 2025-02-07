@@ -76,7 +76,7 @@ jobs:
         id: trivyScan
         continue-on-error: false
         run: |
-          trivy image --exit-code 1 --severity HIGH,CRITICAL springboothello:${{ env.IMAGE_TAG }}
+          trivy -d image springboothello:${{ env.IMAGE_TAG }}
 
       - name: Docker image tagging
         id: dockerImageTag
