@@ -49,6 +49,8 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     needs: build
+    env:
+      IMAGE_TAG: ${{ inputs.image_tag }}
     steps:
       - name: Checkout Repository
         id: checkout
@@ -61,13 +63,6 @@ jobs:
           name: package
           path: artifact/
 
-      - name: Set Image Tag
-        run: |
-          if [ -z "${{ github.event.inputs.image_tag }}" ]; then
-            echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
-          else
-            echo "IMAGE_TAG=${{ github.event.inputs.image_tag }}" >> $GITHUB_ENV
-          fi
       - name: Build Docker Image
         id: buildDockerImage
         run: |
