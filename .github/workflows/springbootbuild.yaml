@@ -97,5 +97,6 @@ jobs:
         run: |
           minikube service list
           minikube service springboot-hello --url
+          kubectl port-forward svc/springboot-hello 8080:30001 &
           echo "------------------opening the service------------------"
           curl $(minikube service springboot-hello --url)
