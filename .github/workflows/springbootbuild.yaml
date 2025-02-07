@@ -7,9 +7,6 @@ on:
         description: "Docker Image Tag to Deploy"
         required: true
         type: string
-  push:
-    branches:
-      - feature/kubernetes
 
 jobs:
   build:
