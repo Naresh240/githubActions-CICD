@@ -88,3 +88,49 @@ jobs:
         with:
           name: image-tag
           path: image-tag.txt
+  
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1
+      EKS_CLUSTER_NAME: eksdemo
+
+    steps:
+      - name: Checkout Repository
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Download Image Tag
+        uses: actions/download-artifact@v4
+        with:
+          name: image-tag
+          path: ./
+
+      - name: Read Image Tag
+        run: echo "IMAGE_TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Authenticate with Amazon EKS
+        run: |
+          aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Deploy to EKS
+        run: |
+          sed -i 's|image: .*|image: naresh240/springboothello:'"${{ env.IMAGE_TAG }}"'|' deploy/deployment.yaml
+          kubectl apply -f deploy/deployment.yaml
+          kubectl apply -f deploy/service.yaml
+
+      - name: List pods and services
+        run: |
+          sleep 10
+          kubectl get pods
+          kubectl get services
+
+
