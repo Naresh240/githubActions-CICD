@@ -101,7 +101,7 @@ jobs:
   
   DeployToEKS:
     runs-on: ubuntu-latest
-    needs: build_and_push_docker_image
+    needs: DockerImageBuild
     env:
       AWS_REGION: us-east-1
       EKS_CLUSTER_NAME: eksdemo
